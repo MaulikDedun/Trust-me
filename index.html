@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Me</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 50%, #16213e 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .trust-button {
+            position: relative;
+            width: 280px;
+            height: 80px;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%);
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 40px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .trust-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, 
+                rgba(0, 255, 255, 0.1) 0%, 
+                rgba(0, 150, 255, 0.2) 50%, 
+                rgba(0, 255, 255, 0.1) 100%);
+            border-radius: 42px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .trust-button:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.4),
+                0 0 60px rgba(0, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.6);
+        }
+
+        .trust-button:hover::before {
+            opacity: 1;
+        }
+
+        .trust-button:active {
+            transform: scale(0.98);
+            transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+
+
+        /* Subtle static glow */
+        .trust-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.06) 0%, transparent 60%);
+            border-radius: 50px;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        /* Subtle background animation */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.01) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(0, 150, 255, 0.01) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-10px) rotate(1deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="trust-button" onclick="playMusic()">Trust me</button>
+    
+    <!-- Option 1: Direct audio files (recommended) -->
+    <audio id="backgroundMusic" preload="auto" style="display: none;">
+        <source src="YOUR_DIRECT_AUDIO_LINK.mp3" type="audio/mpeg">
+        <source src="YOUR_DIRECT_AUDIO_LINK.ogg" type="audio/ogg">
+        <!-- 
+        PASTE YOUR AUDIO LINK HERE - Examples of what works:
+        - Direct MP3 links: https://example.com/song.mp3
+        - SoundCloud direct links (if allowed)
+        - Your own hosted audio files
+        - Free audio from: freesound.org, zapsplat.com
+        
+        YouTube links WON'T work due to copyright protection
+        -->
+    </audio>
+
+    <!-- Option 2: YouTube embed (hidden, for background music) -->
+    <iframe id="youtubePlayer" 
+            width="0" 
+            height="0" 
+            src="" 
+            style="display: none;"
+            allow="autoplay">
+    </iframe>
+    <!-- To use YouTube: Replace YOUTUBE_VIDEO_ID in the script below -->
+
+    <script>
+        let isPlaying = false;
+        const music = document.getElementById('backgroundMusic');
+        const youtubeFrame = document.getElementById('youtubePlayer');
+        
+        // Configuration - Choose your method:
+        const USE_YOUTUBE = false; // Set to true if using YouTube
+        const YOUTUBE_VIDEO_ID = "YOUR_YOUTUBE_VIDEO_ID_HERE"; // Get from YouTube URL
+        
+        function playMusic() {
+            if (USE_YOUTUBE) {
+                playYouTubeMusic();
+            } else {
+                playDirectAudio();
+            }
+        }
+        
+        function playDirectAudio() {
+            if (!isPlaying) {
+                music.play().catch(error => {
+                    console.log('Audio playback failed:', error);
+                    alert('Please make sure your audio link is direct and accessible!');
+                });
+                isPlaying = true;
+                document.querySelector('.trust-button').textContent = 'Playing...';
+            } else {
+                music.pause();
+                music.currentTime = 0;
+                isPlaying = false;
+                document.querySelector('.trust-button').textContent = 'Trust me';
+            }
+        }
+        
+        function playYouTubeMusic() {
+            if (!isPlaying) {
+                // YouTube embed with autoplay (may be blocked by browsers)
+                youtubeFrame.src = `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&loop=1&playlist=${YOUTUBE_VIDEO_ID}`;
+                youtubeFrame.style.display = 'block';
+                isPlaying = true;
+                document.querySelector('.trust-button').textContent = 'Playing...';
+            } else {
+                youtubeFrame.src = '';
+                youtubeFrame.style.display = 'none';
+                isPlaying = false;
+                document.querySelector('.trust-button').textContent = 'Trust me';
+            }
+        }
+        
+        // Reset button text when direct audio ends
+        music.addEventListener('ended', function() {
+            isPlaying = false;
+            document.querySelector('.trust-button').textContent = 'Trust me';
+        });
+    </script>
+</body>
+</html>
